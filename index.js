@@ -22,10 +22,28 @@ let transporter = nodemailer.createTransport({
 });
 
 // sending emails at periodic intervals
-cron.schedule("0 7 9 * * *", function() {
+cron.schedule("*/1 * * * *", function() {
   console.log("---------------------");
   console.log("Running Cron Job");
 
+  function formatAMPM(date) {
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var ampm = hours >= 12 ? "pm" : "am";
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    var strTime = hours + ":" + minutes + " " + ampm;
+    return strTime;
+  }
+
+  const sendtime = formatAMPM(new Date());
+
+  if (sendtime == "5:14 pm") {
+    console.log("Sending SMS");
+  } else {
+    console.log("Not yet time to send SMS");
+  }
   // request("http://localhost/iceatrans/trans.php", function(
   //   error,
   //   response,
@@ -74,13 +92,13 @@ cron.schedule("0 7 9 * * *", function() {
     subject: "Node JS Cron Job",
     text: "Hi Conard, this email was sent at exactly 9:00AM"
   };
-  transporter.sendMail(mailOptions, function(error, info) {
-    if (error) {
-      throw error;
-    } else {
-      console.log("Email successfully sent!");
-    }
-  });
+  // transporter.sendMail(mailOptions, function(error, info) {
+  //   if (error) {
+  //     throw error;
+  //   } else {
+  //     console.log("Email successfully sent!");
+  //   }
+  // });
 });
 
 app.listen(3000);
